@@ -897,7 +897,7 @@
 ════════════════════════════════════════════ */
 // IMPORTANTE: Substitua a URL abaixo pela URL do seu Google Form
 // Para obter a URL, crie um Google Form e copie o ID do formulário
-const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc7CDLmCmSAHarFRtj9EAC-rSU8C84MaHfXf4edEWWmgIVlYg/viewform';
+const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc7CDLmCmSAHarFRtj9EAC-rSU8C84MaHfXf4edEWWmgIVlYg/formResponse';
 
 // Mapeamento dos campos do formulário para o Google Forms
 // Você precisa descobrir os IDs dos campos no seu Google Form
@@ -1226,7 +1226,17 @@ async function submitReport() {
         localStorage.setItem('parasito_reports', JSON.stringify(localReports));
 
         showResult(fd, perfil, escore);
-        loadReports();
+        loadReports(function renderHeatmap(reports) {
+    const heatData = reports
+        .filter(r => r.latitude && r.longitude)
+        .map(r => [r.latitude, r.longitude, 0.5]); // intensidade
+
+    L.heatLayer(heatData, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 10
+    }).addTo(map);
+});
 
     } catch (err) {
         alert('Erro ao salvar: ' + err.message + '\n\nVerifique se a URL do Google Forms está configurada corretamente.');
