@@ -736,9 +736,9 @@
                     <select class="dur-sel" onclick="event.stopPropagation()"><option>Duração…</option><option>Menos de 1 semana</option><option>1 – 4 semanas</option><option>Mais de 4 semanas</option></select>
                 </div>
             </div>
-            <div class="symptom-card" data-s="Distensão abdominal" onclick="toggleSym(this)">
+            <div class="symptom-card" data-s="Barriga estufada" onclick="toggleSym(this)">
                 <div class="s-icon">🫁</div>
-                <div class="s-name">Distensão abdominal</div>
+                <div class="s-name">Barriga estufada</div>
                 <div class="duration-select">
                     <select class="dur-sel" onclick="event.stopPropagation()"><option>Duração…</option><option>Menos de 1 semana</option><option>1 – 4 semanas</option><option>Mais de 4 semanas</option></select>
                 </div>
@@ -906,26 +906,26 @@ const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResp
 // Mapeamento dos campos do formulário para o Google Forms
 // Você precisa descobrir os IDs dos campos no seu Google Form
 const FORM_FIELD_MAPPING = {
-    'faixa_etaria': 'entry.XXXXXXX',
-    'sexo': 'entry.XXXXXXX',
-    'escolaridade': 'entry.XXXXXXX',
-    'municipio': 'entry.XXXXXXX',
-    'uf': 'entry.XXXXXXX',
-    'zona': 'entry.XXXXXXX',
-    'agua_abastec': 'entry.XXXXXXX',
-    'agua_tratamento': 'entry.XXXXXXX',
-    'esgoto': 'entry.XXXXXXX',
-    'lixo': 'entry.XXXXXXX',
-    'animais': 'entry.XXXXXXX',
-    'higiene_maos': 'entry.XXXXXXX',
-    'contato_solo': 'entry.XXXXXXX',
-    'contato_agua': 'entry.XXXXXXX',
-    'sintomas': 'entry.XXXXXXX',
-    'intensidade': 'entry.XXXXXXX',
-    'diag_previo': 'entry.XXXXXXX',
-    'tratamento': 'entry.XXXXXXX',
-    'perfil_sintomas': 'entry.XXXXXXX',
-    'perfil_escore': 'entry.XXXXXXX',
+    'faixa_etaria': 'entry.334845730',
+    'sexo': 'entry.852515180',
+    'escolaridade': 'entry.432527275',
+    'municipio': 'entry.1784068928',
+    'uf': 'entry.82182938',
+    'zona': 'entry.66899769',
+    'agua_abastec': 'entry.1669495766',
+    'agua_tratamento': 'entry.237247710',
+    'esgoto': 'entry.1917707461',
+    'lixo': 'entry.1601578518',
+    'animais': 'entry.268059776',
+    'higiene_maos': 'entry.1577951306',
+    'contato_solo': 'entry.466830185',
+    'contato_agua': 'entry.594702055',
+    'sintomas': 'entry.1433100749',
+    'intensidade': 'entry.1556010891',
+    'diag_previo': 'entry.319529701',
+    'tratamento': 'entry.1691602037',
+    'perfil_sintomas': 'entry.1656350124',
+    'perfil_escore': 'entry.26722933',
 };
 
 let map, markersLayer;
@@ -1107,7 +1107,10 @@ function getLocation() {
         );
     });
 }
-
+p => res({
+    lat: Math.round(p.coords.latitude  * 100) / 100,  // ~1 km de precisão
+    lng: Math.round(p.coords.longitude * 100) / 100
+})
 /* ════════════════════════════════════════════
    COLETA DE DADOS DO FORM
 ════════════════════════════════════════════ */
