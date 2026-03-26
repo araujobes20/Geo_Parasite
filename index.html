@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoParasite - Pesquisa Epidemiológica</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        label i {
+            margin-right: 8px;
+            color: #667eea;
+            width: 16px;
+        }
+
+        .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* TCLE Styles */
+        .tcle-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 2px solid #667eea;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .tcle-title {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .tcle-title i {
+            margin-right: 10px;
+            color: #667eea;
+            font-size: 22px;
+        }
+
+        .tcle-content {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .tcle-content h3 {
+            color: #667eea;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .tcle-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .tcle-content p {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        .tcle-content ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tcle-content li {
+            margin-bottom: 5px;
+        }
+
+        .tcle-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .tcle-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .tcle-checkbox label {
+            margin-bottom: 0;
+            font-size: 14px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .tcle-error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .tcle-error.show {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #submitBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #submitBtn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        #submitBtn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        #clearBtn {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        #clearBtn:hover {
+            background: #e0e0e0;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .status.loading {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .location-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .location-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+
+        .location-indicator.active {
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 25px 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .logo {
+                font-size: 36px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .tcle-section {
+                padding: 20px;
+            }
+
+            .tcle-content {
+                max-height: 200px;
+            }
+        }
+
+        /* Scrollbar personalizado */
+        .form-container::-webkit-scrollbar,
+        .tcle-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form-container::-webkit-scrollbar-track,
+        .tcle-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .form-container::-webkit-scrollbar-thumb,
+        .tcle-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .form-container::-webkit-scrollbar-thumb:hover,
+        .tcle-content::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">🦠</div>
+                <h1>GeoParasite</h1>
+                <p>Pesquisa Epidemiológica de Parasitoses</p>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="form-container">
+            <form id="parasiteForm">
+                <!-- SEÇÃO: TCLE -->
+                <div class="tcle-section">
+                    <div class="tcle-title">
+                        <i class="fas fa-file-contract"></i>
+                        Termo de Consentimento Livre e Esclarecido (TCLE)
+                    </div>
+
+                    <div class="tcle-content">
+                        <h3>1. Propósito da Pesquisa</h3>
+                        <p>Você está sendo convidado(a) a participar de uma pesquisa científica sobre parasitoses e sua distribuição geográfica. Esta pesquisa tem como objetivo coletar informações sobre fatores de risco, exposição ambiental e sintomas relacionados a parasitoses para melhor compreender a epidemiologia dessas doenças.</p>
+
+                        <h3>2. Procedimentos</h3>
+                        <p>Se você concordar em participar, será solicitado que preencha um formulário com informações sobre:</p>
+                        <ul>
+                            <li>Dados demográficos (idade, sexo, escolaridade)</li>
+                            <li>Condições de saneamento e higiene</li>
+                            <li>Fatores de exposição ambiental</li>
+                            <li>Sintomas e histórico de diagnóstico</li>
+                            <li>Localização geográfica (latitude e longitude)</li>
+                        </ul>
+
+                        <h3>3. Riscos e Benefícios</h3>
+                        <p><strong>Riscos:</strong> Os riscos associados a esta pesquisa são mínimos. Os dados coletados serão tratados com confidencialidade.</p>
+                        <p><strong>Benefícios:</strong> Você contribuirá para o avanço do conhecimento científico sobre parasitoses e poderá receber informações sobre saúde e prevenção.</p>
+
+                        <h3>4. Confidencialidade</h3>
+                        <p>Todas as informações coletadas serão mantidas em sigilo e utilizadas apenas para fins de pesquisa. Seus dados pessoais não serão divulgados e serão identificados apenas por um código de pesquisa.</p>
+
+                        <h3>5. Direitos do Participante</h3>
+                        <p>Sua participação é completamente voluntária. Você pode recusar-se a participar ou retirar-se da pesquisa a qualquer momento, sem penalidades ou perda de benefícios.</p>
+
+                        <h3>6. Contato</h3>
+                        <p>Se você tiver dúvidas sobre esta pesquisa, entre em contato com a equipe de pesquisa através dos canais fornecidos.</p>
+                    </div>
+
+                    <div class="tcle-checkbox">
+                        <input type="checkbox" id="tcleConsent" name="tcleConsent" required>
+                        <label for="tcleConsent">
+                            Eu li e compreendi o Termo de Consentimento Livre e Esclarecido e concordo em participar desta pesquisa de forma voluntária.
+                            <span class="required">*</span>
+                        </label>
+                    </div>
+                    <div class="tcle-error" id="tcleError">
+                        <i class="fas fa-exclamation-circle"></i> Você deve aceitar o TCLE para continuar.
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: DADOS DEMOGRÁFICOS -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-user"></i>
+                        Dados Demográficos
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-birthday-cake"></i>
+                            Faixa etária
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.334845730" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-venus-mars"></i>
+                            Sexo biológico
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.852515180" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-graduation-cap"></i>
+                            Escolaridade
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.432527275" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: LOCALIZAÇÃO -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Localização
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-city"></i>
+                            Município
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" name="entry.1784068928" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-map"></i>
+                            Estado (UF)
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.82182938" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-home"></i>
+                            Zona de residência
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.66899769" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: SANEAMENTO -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-water"></i>
+                        Saneamento e Higiene
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-droplet"></i>
+                            Fonte de água
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1669495766" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-filter"></i>
+                            Tratamento de água
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.237247710" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-toilet"></i>
+                            Destinação de esgoto
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1917707461" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-trash"></i>
+                            Coleta de lixo
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1601578518" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-hands"></i>
+                            Higiene das mãos
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1577951306" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: EXPOSIÇÃO -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Fatores de Exposição
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-dog"></i>
+                            Animais domésticos
+                        </label>
+                        <select name="entry.268059776">
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-leaf"></i>
+                            Contato com solo
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.466830185" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-water"></i>
+                            Contato com água
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" name="entry.594702055" required>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: SINTOMAS E DIAGNÓSTICO -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        Sintomas e Diagnóstico
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-notes-medical"></i>
+                            Sintomas
+                        </label>
+                        <textarea name="entry.1433100749" placeholder="Descreva os sintomas..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-chart-line"></i>
+                            Intensidade dos sintomas
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1556010891" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-stethoscope"></i>
+                            Diagnóstico prévio
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.319529701" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-pills"></i>
+                            Uso de antiparasitário
+                            <span class="required">*</span>
+                        </label>
+                        <select name="entry.1691602037" required>
+                            <option value="">Selecione uma opção</option>
+                            <option value="Opção 1">Opção 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO: ANÁLISE -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-microscope"></i>
+                        Análise
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-list"></i>
+                            Perfil de sintomas
+                        </label>
+                        <input type="text" name="entry.1656350124">
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-calculator"></i>
+                            Escore do perfil
+                        </label>
+                        <input type="text" name="entry.26722933">
+                    </div>
+                </div>
+
+                <!-- Campos Ocultos de Geolocalização -->
+                <input type="hidden" id="lat" name="entry.1170848517">
+                <input type="hidden" id="lon" name="entry.1017526211">
+
+                <!-- Botões -->
+                <div class="button-group">
+                    <button type="submit" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Dados
+                    </button>
+                    <button type="reset" id="clearBtn">
+                        <i class="fas fa-redo"></i>
+                        Limpar
+                    </button>
+                </div>
+
+                <div id="status" class="status"></div>
+                <div class="location-status">
+                    <div class="location-indicator" id="locationIndicator"></div>
+                    <span id="locationText">Aguardando localização...</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Função para capturar geolocalização
+        function getLocation() {
+            const indicator = document.getElementById('locationIndicator');
+            const text = document.getElementById('locationText');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        document.getElementById('lat').value = position.coords.latitude;
+                        document.getElementById('lon').value = position.coords.longitude;
+                        indicator.classList.add('active');
+                        text.textContent = `Localização capturada (${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)})`;
+                        console.log("Localização capturada com sucesso.");
+                    },
+                    function(error) {
+                        indicator.classList.remove('active');
+                        text.textContent = 'Erro ao obter localização. Ative a permissão de localização.';
+                        console.error("Erro ao obter localização: " + error.message);
+                    }
+                );
+            } else {
+                indicator.classList.remove('active');
+                text.textContent = 'Geolocalização não suportada pelo navegador.';
+            }
+        }
+
+        // Capturar localização ao carregar a página
+        window.addEventListener('load', getLocation);
+
+        // Validação do TCLE
+        document.getElementById('tcleConsent').addEventListener('change', function() {
+            const error = document.getElementById('tcleError');
+            if (this.checked) {
+                error.classList.remove('show');
+            }
+        });
+
+        // Manipulação do envio do formulário
+        document.getElementById('parasiteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validar TCLE
+            const tcleConsent = document.getElementById('tcleConsent');
+            const tcleError = document.getElementById('tcleError');
+
+            if (!tcleConsent.checked) {
+                tcleError.classList.add('show');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            btn.disabled = true;
+
+            status.className = 'status show loading';
+            status.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando dados...';
+
+            const formData = new FormData(this);
+            const formAction = "https://docs.google.com/forms/d/e/1FAIpQLSc7CDLmCmSAHarFRtj9EAC-rSU8C84MaHfXf4edEWWmgIVlYg/formResponse";
+
+            fetch(formAction, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: formData
+            }).then(() => {
+                setTimeout(() => {
+                    status.className = 'status show success';
+                    status.innerHTML = '<i class="fas fa-check-circle"></i> Dados enviados com sucesso!';
+                    this.reset();
+                    btn.disabled = false;
+                    tcleConsent.checked = false;
+                    getLocation();
+                }, 1000);
+            }).catch(error => {
+                status.className = 'status show error';
+                status.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao enviar. Tente novamente.';
+                btn.disabled = false;
+            });
+        });
+
+        // Limpar formulário
+        document.getElementById('clearBtn').addEventListener('click', function() {
+            document.getElementById('status').className = 'status';
+            document.getElementById('tcleError').classList.remove('show');
+        });
+    </script>
+</body>
+</html>
