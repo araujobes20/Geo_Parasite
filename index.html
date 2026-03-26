@@ -835,10 +835,6 @@
         <div class="stat-box"><div class="st-num" id="stat-perfil">—</div><div class="st-lbl">Perfil mais frequente</div></div>
     </div>
 
-    <div class="export-row" id="export-row" style="display:none;">
-        <button class="btn btn-outline" style="font-size:.85em;" onclick="exportCSV()">⬇️ Exportar dados (CSV)</button>
-    </div>
-
     <div id="map"></div>
 
     <div class="alert-info" style="margin-top:14px;">
@@ -1339,40 +1335,6 @@ function updateStats() {
     allReports.forEach(r => { if (r.perfil_sintomas) freq[r.perfil_sintomas] = (freq[r.perfil_sintomas]||0)+1; });
     const top = Object.entries(freq).sort((a,b)=>b[1]-a[1])[0];
     document.getElementById('stat-perfil').textContent = top ? top[0].split('(')[0].trim() : '—';
-
-    // Exibir botão de exportação quando há dados
-    document.getElementById('export-row').style.display = allReports.length ? 'flex' : 'none';
-}
-
-/* ════════════════════════════════════════════
-   EXPORT CSV
-════════════════════════════════════════════ */
-function exportCSV() {
-    if (!allReports.length) { alert('Nenhum dado para exportar.'); return; }
-
-    const cols = [
-        'created_at','municipio','uf','zona','faixa_etaria','sexo','escolaridade',
-        'agua_abastec','esgoto','lixo','higiene_maos','contato_solo','contato_agua',
-        'intensidade','diag_previo','tratamento','perfil_sintomas','perfil_escore',
-        'latitude','longitude'
-    ];
-
-    const escape = v => {
-        if (v === null || v === undefined) return '';
-        if (Array.isArray(v)) return '"' + v.join('; ') + '"';
-        const s = String(v);
-        return s.includes(',') || s.includes('"') || s.includes('\n')
-            ? '"' + s.replace(/"/g,'""') + '"' : s;
-    };
-
-    const header = cols.join(',');
-    const rows = allReports.map(r => cols.map(c => escape(r[c])).join(','));
-    const csv = [header, ...rows].join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `parasito_dados_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click(); URL.revokeObjectURL(url);
 }
 
 /* ════════════════════════════════════════════
